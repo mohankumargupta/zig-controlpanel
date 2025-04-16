@@ -21,6 +21,9 @@ const LABEL_HORIZONTAL_OFFSET: f32 = 15.0; // How far inset from the left the la
 // Vertical offset to make label sit on the border (approx half font size)
 const LABEL_VERTICAL_OFFSET: f32 = @as(f32, @floatFromInt(LABEL_FONT_SIZE)) / 2.0;
 
+const SCREEN_WIDTH = 1024;
+const SCREEN_HEIGHT = 768;
+
 fn loadFont(file_data: ?[]const u8, font_id: u16, font_size: i32) !void {
     renderer.raylib_fonts[font_id] = try rl.loadFontFromMemory(
         ".ttf",
@@ -34,6 +37,85 @@ fn loadFont(file_data: ?[]const u8, font_id: u16, font_size: i32) !void {
     );
 }
 
+fn leftContainer() void {
+    // --- Time Container ---
+    // This remains inside the normal layout flow of the panel
+    cl.UI()(.{
+        .id = .ID("TimeTextContainer"),
+        .layout = .{
+            .sizing = .grow, // Take remaining space *within the padded area*
+            .child_alignment = .center, // Center the text element inside
+            // Add top padding to push time down below the floating label area
+            // We need to account for the panel's top padding (15) and roughly the label height (16)
+            .padding = .{ .top = LABEL_FONT_SIZE },
+        },
+    })({
+        // Time Text
+        cl.text("08 : 48 : 23", .{
+            .font_id = FONT_ID_REGULAR,
+            .font_size = 72,
+            .color = COLOR_TEXT_TIME,
+        });
+    }); // End TimeTextContainer
+
+}
+
+//TODO: Needs to take a function pointer that becomes the contents of the fieldset
+
+fn fieldset() void {
+    // --- Day Time Clock Panel ---
+    cl.UI()(.{
+        .id = .ID("DayTimeClockPanel"),
+        .layout = .{
+            .direction = .top_to_bottom,
+            .sizing = .{ .w = .fixed(350), .h = .fixed(150) },
+            .padding = .all(15),
+            .child_gap = 10,
+            .child_alignment = .{ .x = .center, .y = .top },
+        },
+        .background_color = COLOR_PANEL_BACKGROUND,
+        .corner_radius = .all(10),
+        .border = .{
+            // Use the BORDER_WIDTH constant
+            .width = .outside(@intFromFloat(BORDER_WIDTH)),
+            .color = COLOR_BORDER,
+        },
+    })({
+        // // --- Floating Label Container ---
+        // // This container holds the text and uses 'floating' to position it
+        cl.UI()(.{
+            .id = .ID("FloatingLabelContainer"),
+            .layout = .{
+                .sizing = .fit, // Size to fit the text inside + padding
+                .padding = .{ .left = 5, .right = 5 }, // Padding around the text
+            },
+            // Make background same as panel to obscure the border underneath
+            .background_color = COLOR_PANEL_BACKGROUND,
+            .floating = .{
+                .attach_to = .to_parent, // Attach relative to DayTimeClockPanel
+                .attach_points = .{
+                    .element = .left_top, // Attach using the top-left of this label container
+                    .parent = .left_top, // Attach relative to the top-left of the parent panel
+                },
+                .offset = .{ // Adjust position
+                    .x = LABEL_HORIZONTAL_OFFSET, // Move right
+                    .y = -LABEL_VERTICAL_OFFSET, // Move up to sit on the border
+                },
+                .zIndex = 1, // Ensure it's drawn above the border
+            },
+        })({
+            //The actual Label Text
+            cl.text("Day Time Clock", .{
+                .font_id = FONT_ID_REGULAR,
+                .font_size = LABEL_FONT_SIZE,
+                .color = COLOR_TEXT_LABEL,
+            });
+        }); // End FloatingLabelContainer
+
+        leftContainer();
+    });
+}
+
 fn createLayout() cl.ClayArray(cl.RenderCommand) {
     // --- Create Layout ---
     cl.beginLayout();
@@ -44,84 +126,16 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
         .layout = .{ .sizing = .grow, .child_alignment = .center },
         .background_color = .{ 20, 20, 20, 255 },
     })({
-        // --- Day Time Clock Panel ---
-        cl.UI()(.{
-            .id = .ID("DayTimeClockPanel"),
-            .layout = .{
-                .direction = .top_to_bottom,
-                .sizing = .{ .w = .fixed(350), .h = .fixed(150) },
-                .padding = .all(15),
-                .child_gap = 10,
-                .child_alignment = .{ .x = .center, .y = .top },
-            },
-            .background_color = COLOR_PANEL_BACKGROUND,
-            .corner_radius = .all(10),
-            .border = .{
-                // Use the BORDER_WIDTH constant
-                .width = .outside(@intFromFloat(BORDER_WIDTH)),
-                .color = COLOR_BORDER,
-            },
-        })({
-            // // --- Floating Label Container ---
-            // // This container holds the text and uses 'floating' to position it
-            cl.UI()(.{
-                .id = .ID("FloatingLabelContainer"),
-                .layout = .{
-                    .sizing = .fit, // Size to fit the text inside + padding
-                    .padding = .{ .left = 5, .right = 5 }, // Padding around the text
-                },
-                // Make background same as panel to obscure the border underneath
-                .background_color = COLOR_PANEL_BACKGROUND,
-                .floating = .{
-                    .attach_to = .to_parent, // Attach relative to DayTimeClockPanel
-                    .attach_points = .{
-                        .element = .left_top, // Attach using the top-left of this label container
-                        .parent = .left_top, // Attach relative to the top-left of the parent panel
-                    },
-                    .offset = .{ // Adjust position
-                        .x = LABEL_HORIZONTAL_OFFSET, // Move right
-                        .y = -LABEL_VERTICAL_OFFSET, // Move up to sit on the border
-                    },
-                    .zIndex = 1, // Ensure it's drawn above the border
-                },
-            })({
-                //The actual Label Text
-                cl.text("Day Time Clock", .{
-                    .font_id = FONT_ID_REGULAR,
-                    .font_size = LABEL_FONT_SIZE,
-                    .color = COLOR_TEXT_LABEL,
-                });
-            }); // End FloatingLabelContainer
-
-            // --- Time Container ---
-            // This remains inside the normal layout flow of the panel
-            cl.UI()(.{
-                .id = .ID("TimeTextContainer"),
-                .layout = .{
-                    .sizing = .grow, // Take remaining space *within the padded area*
-                    .child_alignment = .center, // Center the text element inside
-                    // Add top padding to push time down below the floating label area
-                    // We need to account for the panel's top padding (15) and roughly the label height (16)
-                    .padding = .{ .top = LABEL_FONT_SIZE },
-                },
-            })({
-                // Time Text
-                cl.text("08 : 48 : 23", .{
-                    .font_id = FONT_ID_REGULAR,
-                    .font_size = 72,
-                    .color = COLOR_TEXT_TIME,
-                });
-            }); // End TimeTextContainer
-
-        }); // End DayTimeClockPanel
+        // End DayTimeClockPanel
+        fieldset();
     }); // End RootContainer
 
-    const render_commands = cl.endLayout();
-    return render_commands;
+    return cl.endLayout();
 }
 
 // --- Main Application Logic ---
 pub fn main() !void {
+    //const allocator = std.heap.page_allocator;
     const allocator = std.heap.page_allocator;
 
     // --- Initialize Clay ---
@@ -129,7 +143,7 @@ pub fn main() !void {
     const memory = try allocator.alloc(u8, min_memory_size);
     defer allocator.free(memory);
     const arena = cl.createArenaWithCapacityAndMemory(memory);
-    _ = cl.initialize(arena, .{ .h = 600, .w = 800 }, .{});
+    _ = cl.initialize(arena, .{ .h = 1024, .w = 800 }, .{});
     cl.setMeasureTextFunction(void, {}, renderer.measureText);
 
     // --- Initialize Raylib ---
@@ -137,7 +151,7 @@ pub fn main() !void {
         .msaa_4x_hint = true,
         .window_resizable = true,
     });
-    rl.initWindow(400, 200, "Day Time Clock Example");
+    rl.initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Quick Launcher");
     rl.setWindowMinSize(200, 100);
     rl.setTargetFPS(60);
 
@@ -159,10 +173,10 @@ pub fn main() !void {
 
         // --- Draw ---
         rl.beginDrawing();
+        defer rl.endDrawing();
         rl.clearBackground(rl.Color.black);
         var render_commands = createLayout();
         try renderer.clayRaylibRender(&render_commands, allocator);
-        rl.endDrawing();
     }
 
     // --- Cleanup ---

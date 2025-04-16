@@ -60,9 +60,7 @@ fn leftContainer() void {
 
 }
 
-//TODO: Needs to take a function pointer that becomes the contents of the fieldset
-
-fn fieldset() void {
+fn fieldset(content: fn () void) void {
     // --- Day Time Clock Panel ---
     cl.UI()(.{
         .id = .ID("DayTimeClockPanel"),
@@ -112,7 +110,7 @@ fn fieldset() void {
             });
         }); // End FloatingLabelContainer
 
-        leftContainer();
+        content();
     });
 }
 
@@ -127,7 +125,7 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
         .background_color = .{ 20, 20, 20, 255 },
     })({
         // End DayTimeClockPanel
-        fieldset();
+        fieldset(leftContainer);
     }); // End RootContainer
 
     return cl.endLayout();

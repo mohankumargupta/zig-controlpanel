@@ -9,6 +9,7 @@ const COLOR_PANEL_BACKGROUND: cl.Color = .{ 61, 26, 5, 255 }; // Brownish backgr
 const COLOR_BORDER: cl.Color = .{ 240, 240, 240, 255 }; // White-ish border
 const COLOR_TEXT_LABEL: cl.Color = .{ 240, 240, 240, 255 }; // White-ish for label
 const COLOR_TEXT_TIME: cl.Color = .{ 0, 228, 48, 255 }; // Bright Green
+const COLOR_BLACK: cl.Color = .{ 0, 0, 0, 255 };
 
 // Font IDs
 const FONT_ID_REGULAR = 0;
@@ -71,7 +72,7 @@ fn fieldset(content: fn () void) void {
             .child_gap = 10,
             .child_alignment = .{ .x = .center, .y = .top },
         },
-        .background_color = COLOR_PANEL_BACKGROUND,
+        .background_color = COLOR_BLACK,
         .corner_radius = .all(10),
         .border = .{
             // Use the BORDER_WIDTH constant
@@ -88,7 +89,7 @@ fn fieldset(content: fn () void) void {
                 .padding = .{ .left = 5, .right = 5 }, // Padding around the text
             },
             // Make background same as panel to obscure the border underneath
-            .background_color = COLOR_PANEL_BACKGROUND,
+            .background_color = COLOR_BLACK,
             .floating = .{
                 .attach_to = .to_parent, // Attach relative to DayTimeClockPanel
                 .attach_points = .{

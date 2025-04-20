@@ -8,8 +8,8 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/zig-out/bin/zig_controlpaneltest.exe",
-            "args": [],
+            "program": "just",
+            "args": ["test"],
             "cwd": "${workspaceFolder}"
         }
     ]

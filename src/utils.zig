@@ -24,3 +24,26 @@ test "struct only needs to partially implement the important bits from json` " {
     defer parsed.deinit();
     try testing.expectEqualSlices(u8, parsed.value.first, "buildrun");
 }
+
+test "handle objects" {
+    const T = struct {
+        recipe: struct {
+            build: struct {
+                attributes: []const u8,
+            },
+        },
+    };
+
+    const justfile =
+        \\{
+        \\  "recipe": {
+        \\    "build": {
+        \\       "attributes": "boo"
+        \\    }
+        \\  }
+        \\} 
+    ;
+    const parsed = try parseFromSlice(T, testing.allocator, justfile, .{ .ignore_unknown_fields = true });
+    defer parsed.deinit();
+    try testing.expectEqualSlices(u8, parsed.value.recipe.build.attributes, "boo");
+}

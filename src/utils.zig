@@ -75,3 +75,32 @@ test "try hashmap" {
         try std.testing.expectEqualSlices(u8, recipe_name, expected[index]);
     }
 }
+
+test "try struct" {
+    const justfile =
+        \\{
+        \\    "recipes": {
+        \\        "step1": {
+        \\            "name": "Boo"
+        \\        },
+        \\        "step2": {
+        \\            "name": "Moo"
+        \\        }
+        \\    }
+        \\}
+    ;
+
+    const Recipe = struct {
+        name: []const u8,
+    };
+
+    const Justfile = struct {
+        recipes: std.json.ArrayHashMap(Recipe),
+    };
+
+    var parsed = try parseFromSlice(Justfile, testing.allocator, justfile, .{});
+    defer parsed.deinit();
+    var root = parsed.value;
+    const recipe_name = root.recipes.map.get("step1").?.name;
+    try std.testing.expectEqualSlices(u8, "Boo", recipe_name);
+}

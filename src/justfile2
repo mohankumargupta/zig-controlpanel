@@ -1,10 +1,18 @@
 set shell := ["sh", "-c"]
 set windows-shell := ["powershell", "-c"]
 
-build target:
-    zig build --target {{target}}
+build:
+    zig build
 
 run:
     zig build run
+    
+release target optimize="ReleaseSmall":
+    zig build -D{{target}} -D{{optimize}}
+
+help:
+    zig build-exe --help
+
+
 
 

@@ -2,12 +2,25 @@
 //! you are making an executable, the convention is to delete this file and
 //! start with main.zig instead.
 const std = @import("std");
+const parseFromSlice = std.json.parseFromSlice;
 const testing = std.testing;
 
-pub export fn add(a: i32, b: i32) i32 {
-    return a + b;
-}
+test "struct only needs to partially implement the important bits from json` " {
+    const T = struct {
+        first: []const u8,
+    };
 
-test "basic add functionality" {
-    try testing.expect(add(3, 7) == 10);
+    const justfile =
+        \\{
+        \\  "aliases": {},
+        \\  "assignments": {},
+        \\  "first": "buildrun",
+        \\  "doc": null,
+        \\  "groups": [],
+        \\  "modules": {}
+        \\} 
+    ;
+    const parsed = try parseFromSlice(T, testing.allocator, justfile, .{ .ignore_unknown_fields = true });
+    defer parsed.deinit();
+    try testing.expectEqualSlices(u8, parsed.value.first, "buildrun");
 }

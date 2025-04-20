@@ -1,0 +1,128 @@
+{
+    "aliases": {},
+    "assignments": {},
+    "first": "buildrun",
+    "doc": null,
+    "groups": [],
+    "modules": {},
+    "recipes": {
+        "build": {
+            "attributes": [],
+            "body": [
+                [
+                    "zig build"
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "build",
+            "namepath": "build",
+            "parameters": [],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        },
+        "buildrun": {
+            "attributes": [],
+            "body": [
+                [
+                    "zig build run"
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "buildrun",
+            "namepath": "buildrun",
+            "parameters": [],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        },
+        "choose": {
+            "attributes": [],
+            "body": [
+                [
+                    "@just --choose"
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "choose",
+            "namepath": "choose",
+            "parameters": [],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        },
+        "dump": {
+            "attributes": [],
+            "body": [
+                [
+                    "@just --dump --dump-format json"
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "dump",
+            "namepath": "dump",
+            "parameters": [],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        },
+        "test": {
+            "attributes": [],
+            "body": [
+                [
+                    "zig build test"
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "test",
+            "namepath": "test",
+            "parameters": [],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        }
+    },
+    "settings": {
+        "allow_duplicate_recipes": false,
+        "allow_duplicate_variables": false,
+        "dotenv_filename": null,
+        "dotenv_load": false,
+        "dotenv_path": null,
+        "dotenv_required": false,
+        "export": false,
+        "fallback": false,
+        "ignore_comments": false,
+        "no_exit_message": false,
+        "positional_arguments": false,
+        "quiet": false,
+        "shell": {
+            "arguments": [
+                "-c"
+            ],
+            "command": "sh"
+        },
+        "tempdir": null,
+        "unstable": false,
+        "windows_powershell": false,
+        "windows_shell": {
+            "arguments": [
+                "-c"
+            ],
+            "command": "powershell"
+        },
+        "working_directory": null
+    },
+    "source": "C:\\Users\\Mohan\\Developer\\zig\\fundamentals\\parseJson\\justfile",
+    "unexports": [],
+    "warnings": []
+}

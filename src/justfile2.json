@@ -1,0 +1,90 @@
+{
+    "aliases": {},
+    "assignments": {},
+    "first": "build",
+    "doc": null,
+    "groups": [],
+    "modules": {},
+    "recipes": {
+        "build": {
+            "attributes": [],
+            "body": [
+                [
+                    "zig build --target ",
+                    [
+                        [
+                            "variable",
+                            "target"
+                        ]
+                    ]
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "build",
+            "namepath": "build",
+            "parameters": [
+                {
+                    "default": null,
+                    "export": false,
+                    "kind": "singular",
+                    "name": "target"
+                }
+            ],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        },
+        "run": {
+            "attributes": [],
+            "body": [
+                [
+                    "zig build run"
+                ]
+            ],
+            "dependencies": [],
+            "doc": null,
+            "name": "run",
+            "namepath": "run",
+            "parameters": [],
+            "priors": 0,
+            "private": false,
+            "quiet": false,
+            "shebang": false
+        }
+    },
+    "settings": {
+        "allow_duplicate_recipes": false,
+        "allow_duplicate_variables": false,
+        "dotenv_filename": null,
+        "dotenv_load": false,
+        "dotenv_path": null,
+        "dotenv_required": false,
+        "export": false,
+        "fallback": false,
+        "ignore_comments": false,
+        "no_exit_message": false,
+        "positional_arguments": false,
+        "quiet": false,
+        "shell": {
+            "arguments": [
+                "-c"
+            ],
+            "command": "sh"
+        },
+        "tempdir": null,
+        "unstable": false,
+        "windows_powershell": false,
+        "windows_shell": {
+            "arguments": [
+                "-c"
+            ],
+            "command": "powershell"
+        },
+        "working_directory": null
+    },
+    "source": "C:\\Users\\mohan\\Downloads\\justfiles\\justfile",
+    "unexports": [],
+    "warnings": []
+}

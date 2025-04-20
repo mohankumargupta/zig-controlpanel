@@ -47,3 +47,31 @@ test "handle objects" {
     defer parsed.deinit();
     try testing.expectEqualSlices(u8, parsed.value.recipe.build.attributes, "boo");
 }
+
+test "try hashmap" {
+    const justfile =
+        \\{
+        \\    "recipes": {
+        \\        "step1": {
+        \\            "name": "Boo"
+        \\        },
+        \\        "step2": {
+        \\            "name": "Moo"
+        \\        }
+        \\    }
+        \\}
+    ;
+
+    var parsed = try parseFromSlice(std.json.Value, testing.allocator, justfile, .{});
+    defer parsed.deinit();
+    var root = parsed.value;
+    const recipes = root.object.get("recipes").?.object;
+    const keys = recipes.keys();
+    try std.testing.expectEqual(keys.len, 2);
+    const expected = [_][]const u8{ "Boo", "Moo" };
+    for (keys, 0..) |key, index| {
+        const recipe = recipes.get(key);
+        const recipe_name = recipe.?.object.get("name").?.string;
+        try std.testing.expectEqualSlices(u8, recipe_name, expected[index]);
+    }
+}

@@ -126,7 +126,14 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
     cl.beginLayout();
     cl.UI()(.{
         .id = .ID("RootContainer"),
-        .layout = .{ .sizing = .grow, .child_alignment = .center },
+        .layout = .{
+            .sizing = .grow,
+            .padding = .all(8),
+            .child_alignment = .{
+                .x = .left,
+                .y = .top,
+            },
+        },
         .background_color = .{ 0, 0, 0, 255 },
     })({
         // End DayTimeClockPanel

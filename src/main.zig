@@ -3,6 +3,10 @@ const std = @import("std");
 const rl = @import("raylib");
 const cl = @import("zclay");
 const renderer = @import("raylib_render_clay.zig");
+const parseJustfile = @import("justfile.zig").parseJustfile;
+const Recipe = @import("justfile.zig").Recipe;
+const Parameter = @import("justfile.zig").Parameter;
+const fs = std.fs;
 
 // Define Colors (using Clay's Color type [4]f32)
 const COLOR_PANEL_BACKGROUND: cl.Color = .{ 61, 26, 5, 255 }; // Brownish background
@@ -118,8 +122,6 @@ fn fieldset(content: fn () void) void {
 fn createLayout() cl.ClayArray(cl.RenderCommand) {
     // --- Create Layout ---
     cl.beginLayout();
-
-    // Root container
     cl.UI()(.{
         .id = .ID("RootContainer"),
         .layout = .{ .sizing = .grow, .child_alignment = .center },
@@ -132,8 +134,24 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
     return cl.endLayout();
 }
 
+fn getTasks() !void {
+    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+    const justfile = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
+    defer allocator.free(justfile);
+    const recipes = try parseJustfile(allocator, justfile);
+
+    for (recipes) |recipe| {
+        const name = recipe.name;
+        std.debug.print("recipe name:{s}", .{name});
+    }
+}
+
 // --- Main Application Logic ---
 pub fn main() !void {
+    try getTasks();
+
     //const allocator = std.heap.page_allocator;
     const allocator = std.heap.page_allocator;
 

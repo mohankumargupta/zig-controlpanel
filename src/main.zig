@@ -6,6 +6,8 @@ const renderer = @import("raylib_render_clay.zig");
 const parseJustfile = @import("justfile.zig").parseJustfile;
 const Recipe = @import("justfile.zig").Recipe;
 const Parameter = @import("justfile.zig").Parameter;
+const justfile = @import("justfile.zig");
+const Justfile = @import("justfile.zig").Justfile;
 const fs = std.fs;
 
 // Define Colors (using Clay's Color type [4]f32)
@@ -134,26 +136,41 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
     return cl.endLayout();
 }
 
-fn getTasks() !void {
-    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-    const justfile = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
-    defer allocator.free(justfile);
-    const recipes = try parseJustfile(allocator, justfile);
+fn getTasks(allocator: std.mem.Allocator) !std.json.Parsed(Justfile) {
+    const justfile_json =
+        \\{
+        \\    "recipes": {
+        \\        "step1": {
+        \\            "name": "Boo"
+        \\        },
+        \\        "step2": {
+        \\            "name": "Moo"
+        \\        }
+        \\    }
+        \\}
+    ;
 
-    for (recipes) |recipe| {
-        const name = recipe.name;
-        std.debug.print("recipe name:{s}", .{name});
-    }
+    //const justfile = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
+    //defer allocator.free(justfile);
+    const parsed = try parseJustfile(allocator, justfile_json);
+    return parsed;
+    // for (recipes) |recipe| {
+    //     const name = recipe.name;
+    //     std.debug.print("recipe name:{s}", .{name});
+    // }
 }
 
 // --- Main Application Logic ---
 pub fn main() !void {
-    //try getTasks();
+    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+
+    const parsed = try getTasks(allocator);
+    defer justfile.deinit(parsed);
 
     //const allocator = std.heap.page_allocator;
-    const allocator = std.heap.page_allocator;
+    //const allocator = std.heap.page_allocator;
 
     // --- Initialize Clay ---
     const min_memory_size: u32 = cl.minMemorySize();

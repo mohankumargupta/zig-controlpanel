@@ -127,7 +127,7 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
     cl.UI()(.{
         .id = .ID("RootContainer"),
         .layout = .{ .sizing = .grow, .child_alignment = .center },
-        .background_color = .{ 20, 20, 20, 255 },
+        .background_color = .{ 0, 0, 0, 255 },
     })({
         // End DayTimeClockPanel
         fieldset(leftContainer);
@@ -186,10 +186,11 @@ pub fn main() !void {
     rl.setConfigFlags(.{
         .msaa_4x_hint = true,
         .window_resizable = true,
+        //.fullscreen_mode = true,
     });
     rl.initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Quick Launcher");
-    rl.setWindowMinSize(200, 100);
-    rl.setTargetFPS(60);
+    rl.setWindowMinSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    rl.setTargetFPS(20);
 
     // --- Load Assets ---
     // Using default font for simplicity
@@ -199,13 +200,22 @@ pub fn main() !void {
 
     // --- Main Loop ---
     while (!rl.windowShouldClose()) {
+        if (!rl.isWindowFullscreen()) {
+            const display = rl.getCurrentMonitor();
+            rl.setWindowSize(rl.getMonitorWidth(display), rl.getMonitorHeight(display));
+            // cl.setLayoutDimensions(.{
+            //     .w = @floatFromInt(screen_width),
+            //     .h = @floatFromInt(screen_height),
+            // });
+            rl.toggleFullscreen();
+        }
         // --- Update ---
-        const screen_width = rl.getScreenWidth();
-        const screen_height = rl.getScreenHeight();
-        cl.setLayoutDimensions(.{
-            .w = @floatFromInt(screen_width),
-            .h = @floatFromInt(screen_height),
-        });
+        // const screen_width = rl.getScreenWidth();
+        // const screen_height = rl.getScreenHeight();
+        // cl.setLayoutDimensions(.{
+        //     .w = @floatFromInt(screen_width),
+        //     .h = @floatFromInt(screen_height),
+        // });
 
         // --- Draw ---
         rl.beginDrawing();

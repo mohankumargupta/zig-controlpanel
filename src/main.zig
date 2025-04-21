@@ -73,7 +73,7 @@ fn fieldset(content: fn () void) void {
         .id = .ID("DayTimeClockPanel"),
         .layout = .{
             .direction = .top_to_bottom,
-            .sizing = .{ .w = .fixed(640), .h = .fixed(150) },
+            .sizing = .{ .w = .grow, .h = .fixed(150) },
             .padding = .all(15),
             .child_gap = 10,
             .child_alignment = .{ .x = .center, .y = .top },
@@ -133,7 +133,17 @@ fn lhs() void {
     });
 }
 
-fn rhs() void {}
+fn rhs() void {
+    cl.UI()(.{
+        .id = .ID("rhs"),
+        .layout = .{
+            .direction = .top_to_bottom,
+            .sizing = .grow,
+        },
+    })({
+        fieldset(leftContainer);
+    });
+}
 
 fn createLayout() cl.ClayArray(cl.RenderCommand) {
     // --- Create Layout ---
@@ -141,6 +151,7 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
     cl.UI()(.{
         .id = .ID("RootContainer"),
         .layout = .{
+            .direction = .left_to_right,
             .sizing = .grow,
             .padding = .all(8),
             .child_alignment = .{
@@ -151,6 +162,7 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
         .background_color = .{ 0, 0, 0, 255 },
     })({
         lhs();
+        rhs();
         // End DayTimeClockPanel
 
     }); // End RootContainer

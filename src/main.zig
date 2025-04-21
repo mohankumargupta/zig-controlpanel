@@ -196,7 +196,7 @@ fn lhs() void {
         .layout = .{
             .direction = .top_to_bottom,
             .sizing = .{
-                .w = .grow,
+                .w = .fixed(800),
                 .h = .grow,
             },
         },
@@ -238,6 +238,7 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
                 .x = .left,
                 .y = .top,
             },
+            .child_gap = 16,
         },
         .background_color = .{ 0, 0, 0, 255 },
     })({

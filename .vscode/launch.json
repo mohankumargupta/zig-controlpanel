@@ -5,11 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lldb",
+            "type": "cppvsdbg",
             "request": "launch",
             "name": "Debug",
-            "program": "just",
-            "args": ["test"],
+            "program": "${workspaceFolder}/zig-out/bin/zig_controlpanel.exe",
+            "args": [],
             "cwd": "${workspaceFolder}"
         }
     ]

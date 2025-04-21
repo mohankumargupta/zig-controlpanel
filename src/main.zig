@@ -150,7 +150,7 @@ fn getTasks() !void {
 
 // --- Main Application Logic ---
 pub fn main() !void {
-    try getTasks();
+    //try getTasks();
 
     //const allocator = std.heap.page_allocator;
     const allocator = std.heap.page_allocator;

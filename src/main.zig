@@ -137,27 +137,29 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
 }
 
 fn getTasks(allocator: std.mem.Allocator) !std.json.Parsed(Justfile) {
-    const justfile_json =
-        \\{
-        \\    "recipes": {
-        \\        "step1": {
-        \\            "name": "Boo"
-        \\        },
-        \\        "step2": {
-        \\            "name": "Moo"
-        \\        }
-        \\    }
-        \\}
-    ;
+    // const justfile_json =
+    //     \\{
+    //     \\    "recipes": {
+    //     \\        "step1": {
+    //     \\            "name": "Boo"
+    //     \\        },
+    //     \\        "step2": {
+    //     \\            "name": "Moo"
+    //     \\        }
+    //     \\    }
+    //     \\}
+    // ;
 
-    //const justfile = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
-    //defer allocator.free(justfile);
+    const justfile_json = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
+    defer allocator.free(justfile_json);
     const parsed = try parseJustfile(allocator, justfile_json);
+    const recipes = parsed.value.recipes.map.values();
+
+    for (recipes) |recipe| {
+        const name = recipe.name;
+        std.debug.print("recipe name:{s}\n", .{name});
+    }
     return parsed;
-    // for (recipes) |recipe| {
-    //     const name = recipe.name;
-    //     std.debug.print("recipe name:{s}", .{name});
-    // }
 }
 
 // --- Main Application Logic ---
@@ -167,7 +169,7 @@ pub fn main() !void {
     const allocator = gpa.allocator();
 
     const parsed = try getTasks(allocator);
-    defer justfile.deinit(parsed);
+    defer parsed.deinit();
 
     //const allocator = std.heap.page_allocator;
     //const allocator = std.heap.page_allocator;

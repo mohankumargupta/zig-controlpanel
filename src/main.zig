@@ -44,11 +44,11 @@ fn loadFont(file_data: ?[]const u8, font_id: u16, font_size: i32) !void {
     );
 }
 
-fn leftContainer() void {
+fn previousPane() void {
     // --- Time Container ---
     // This remains inside the normal layout flow of the panel
     cl.UI()(.{
-        .id = .ID("TimeTextContainer"),
+        .id = .ID("PreviousPane"),
         .layout = .{
             .sizing = .grow, // Take remaining space *within the padded area*
             .child_alignment = .center, // Center the text element inside
@@ -67,10 +67,79 @@ fn leftContainer() void {
 
 }
 
-fn fieldset(content: fn () void) void {
+fn quickLaunchPane() void {
+    // --- Time Container ---
+    // This remains inside the normal layout flow of the panel
+    cl.UI()(.{
+        .id = .ID("QuickLaunch"),
+        .layout = .{
+            .sizing = .grow, // Take remaining space *within the padded area*
+            .child_alignment = .center, // Center the text element inside
+            // Add top padding to push time down below the floating label area
+            // We need to account for the panel's top padding (15) and roughly the label height (16)
+            .padding = .{ .top = LABEL_FONT_SIZE },
+        },
+    })({
+        // Time Text
+        cl.text("08 : 48 : 23", .{
+            .font_id = FONT_ID_REGULAR,
+            .font_size = 72,
+            .color = COLOR_TEXT_TIME,
+        });
+    }); // End TimeTextContainer
+
+}
+
+fn scriptsPane() void {
+    // --- Time Container ---
+    // This remains inside the normal layout flow of the panel
+    cl.UI()(.{
+        .id = .ID("ScriptsPane"),
+        .layout = .{
+            .sizing = .grow, // Take remaining space *within the padded area*
+            .child_alignment = .center, // Center the text element inside
+            // Add top padding to push time down below the floating label area
+            // We need to account for the panel's top padding (15) and roughly the label height (16)
+            .padding = .{ .top = LABEL_FONT_SIZE },
+        },
+    })({
+        // Time Text
+        cl.text("08 : 48 : 23", .{
+            .font_id = FONT_ID_REGULAR,
+            .font_size = 72,
+            .color = COLOR_TEXT_TIME,
+        });
+    }); // End TimeTextContainer
+
+}
+
+fn mainPane() void {
+    // --- Time Container ---
+    // This remains inside the normal layout flow of the panel
+    cl.UI()(.{
+        .id = .ID("MainPane"),
+        .layout = .{
+            .sizing = .grow, // Take remaining space *within the padded area*
+            .child_alignment = .center, // Center the text element inside
+            // Add top padding to push time down below the floating label area
+            // We need to account for the panel's top padding (15) and roughly the label height (16)
+            .padding = .{ .top = LABEL_FONT_SIZE },
+        },
+    })({
+        // Time Text
+        cl.text("08 : 48 : 23", .{
+            .font_id = FONT_ID_REGULAR,
+            .font_size = 72,
+            .color = COLOR_TEXT_TIME,
+        });
+    }); // End TimeTextContainer
+
+}
+
+fn fieldset(id: u32, title: []const u8, content: fn () void) void {
     // --- Day Time Clock Panel ---
     cl.UI()(.{
-        .id = .ID("DayTimeClockPanel"),
+        .id = .IDI("DayTimeClockPanel", id),
         .layout = .{
             .direction = .top_to_bottom,
             .sizing = .grow,
@@ -89,7 +158,7 @@ fn fieldset(content: fn () void) void {
         // // --- Floating Label Container ---
         // // This container holds the text and uses 'floating' to position it
         cl.UI()(.{
-            .id = .ID("FloatingLabelContainer"),
+            .id = .IDI("FloatingLabelContainer", id),
             .layout = .{
                 .sizing = .grow, // Size to fit the text inside + padding
                 .padding = .{ .left = 5, .right = 5 }, // Padding around the text
@@ -110,7 +179,7 @@ fn fieldset(content: fn () void) void {
             },
         })({
             //The actual Label Text
-            cl.text("Day Time Clock", .{
+            cl.text(title, .{
                 .font_id = FONT_ID_REGULAR,
                 .font_size = LABEL_FONT_SIZE,
                 .color = COLOR_TEXT_LABEL,
@@ -132,7 +201,9 @@ fn lhs() void {
             },
         },
     })({
-        fieldset(leftContainer);
+        fieldset(1, "Previous", previousPane);
+        fieldset(2, "Quick Launch", quickLaunchPane);
+        fieldset(3, "Scripts", scriptsPane);
     });
 }
 
@@ -147,7 +218,7 @@ fn rhs() void {
             },
         },
     })({
-        fieldset(leftContainer);
+        fieldset(4, "Main Menu", mainPane);
     });
 }
 
@@ -162,7 +233,7 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
                 .w = .percent(1.0),
                 .h = .percent(1.0),
             },
-            .padding = .all(8),
+            .padding = .all(12),
             .child_alignment = .{
                 .x = .left,
                 .y = .top,

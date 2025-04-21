@@ -73,10 +73,10 @@ fn fieldset(content: fn () void) void {
         .id = .ID("DayTimeClockPanel"),
         .layout = .{
             .direction = .top_to_bottom,
-            .sizing = .{ .w = .grow, .h = .fixed(150) },
+            .sizing = .grow,
             .padding = .all(15),
             .child_gap = 10,
-            .child_alignment = .{ .x = .center, .y = .top },
+            .child_alignment = .{ .x = .left, .y = .top },
         },
         .background_color = COLOR_BLACK,
         .corner_radius = .all(10),
@@ -91,7 +91,7 @@ fn fieldset(content: fn () void) void {
         cl.UI()(.{
             .id = .ID("FloatingLabelContainer"),
             .layout = .{
-                .sizing = .fit, // Size to fit the text inside + padding
+                .sizing = .grow, // Size to fit the text inside + padding
                 .padding = .{ .left = 5, .right = 5 }, // Padding around the text
             },
             // Make background same as panel to obscure the border underneath
@@ -126,7 +126,10 @@ fn lhs() void {
         .id = .ID("lhs"),
         .layout = .{
             .direction = .top_to_bottom,
-            .sizing = .grow,
+            .sizing = .{
+                .w = .grow,
+                .h = .grow,
+            },
         },
     })({
         fieldset(leftContainer);
@@ -138,7 +141,10 @@ fn rhs() void {
         .id = .ID("rhs"),
         .layout = .{
             .direction = .top_to_bottom,
-            .sizing = .grow,
+            .sizing = .{
+                .w = .grow,
+                .h = .grow,
+            },
         },
     })({
         fieldset(leftContainer);
@@ -152,7 +158,10 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
         .id = .ID("RootContainer"),
         .layout = .{
             .direction = .left_to_right,
-            .sizing = .grow,
+            .sizing = .{
+                .w = .percent(1.0),
+                .h = .percent(1.0),
+            },
             .padding = .all(8),
             .child_alignment = .{
                 .x = .left,
@@ -237,10 +246,10 @@ pub fn main() !void {
         if (!rl.isWindowFullscreen()) {
             const display = rl.getCurrentMonitor();
             rl.setWindowSize(rl.getMonitorWidth(display), rl.getMonitorHeight(display));
-            // cl.setLayoutDimensions(.{
-            //     .w = @floatFromInt(screen_width),
-            //     .h = @floatFromInt(screen_height),
-            // });
+            cl.setLayoutDimensions(.{
+                .w = @floatFromInt(rl.getMonitorWidth(display)),
+                .h = @floatFromInt(rl.getMonitorHeight(display)),
+            });
             rl.toggleFullscreen();
         }
         // --- Update ---

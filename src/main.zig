@@ -9,6 +9,7 @@ const Parameter = @import("justfile.zig").Parameter;
 const justfile = @import("justfile.zig");
 const Justfile = @import("justfile.zig").Justfile;
 const fs = std.fs;
+const fmt = std.fmt;
 
 // Define Colors (using Clay's Color type [4]f32)
 const COLOR_PANEL_BACKGROUND: cl.Color = .{ 61, 26, 5, 255 }; // Brownish background
@@ -23,8 +24,8 @@ const FONT_ID_DIGITAL = 1; // Let's assume we load a digital-style font
 
 // Constants for floating label effect
 const BORDER_WIDTH: f32 = 2.0;
-const LABEL_FONT_SIZE: u16 = 16;
-const LABEL_HORIZONTAL_OFFSET: f32 = 15.0; // How far inset from the left the label starts
+const LABEL_FONT_SIZE: u16 = 32;
+const LABEL_HORIZONTAL_OFFSET: f32 = 32.0; // How far inset from the left the label starts
 // Vertical offset to make label sit on the border (approx half font size)
 const LABEL_VERTICAL_OFFSET: f32 = @as(f32, @floatFromInt(LABEL_FONT_SIZE)) / 2.0;
 
@@ -136,7 +137,7 @@ fn mainPane() void {
 
 }
 
-fn fieldset(id: u32, title: []const u8, content: fn () void) void {
+fn fieldset(id: u32, title: []const u8, fieldset_title: []const u8, content: fn () void) !void {
     // --- Day Time Clock Panel ---
     cl.UI()(.{
         .id = .IDI("DayTimeClockPanel", id),
@@ -178,8 +179,16 @@ fn fieldset(id: u32, title: []const u8, content: fn () void) void {
                 .zIndex = 1, // Ensure it's drawn above the border
             },
         })({
+            _ = title;
+            // var buffer: [100]u8 = undefined;
+            // var fba = std.heap.FixedBufferAllocator.init(&buffer);
+            // const allocator = fba.allocator();
+            // const title_with_id = try std.fmt.allocPrint(allocator, "{s}{}", .{ title, id });
+            // defer allocator.free(title_with_id);
+
+            //const title_with_id = cl.ElementId.IDI(title, id);
             //The actual Label Text
-            cl.text(title, .{
+            cl.text(fieldset_title, .{
                 .font_id = FONT_ID_REGULAR,
                 .font_size = LABEL_FONT_SIZE,
                 .color = COLOR_TEXT_LABEL,
@@ -190,7 +199,7 @@ fn fieldset(id: u32, title: []const u8, content: fn () void) void {
     });
 }
 
-fn lhs() void {
+fn lhs() !void {
     cl.UI()(.{
         .id = .ID("lhs"),
         .layout = .{
@@ -201,13 +210,13 @@ fn lhs() void {
             },
         },
     })({
-        fieldset(1, "Previous", previousPane);
-        fieldset(2, "Quick Launch", quickLaunchPane);
-        fieldset(3, "Scripts", scriptsPane);
+        try fieldset(1, "Previous", "[1] Previous", previousPane);
+        try fieldset(2, "Quick Launch", "[2] QuickLaunch", quickLaunchPane);
+        try fieldset(3, "Scripts", "[3] Scripts", scriptsPane);
     });
 }
 
-fn rhs() void {
+fn rhs() !void {
     cl.UI()(.{
         .id = .ID("rhs"),
         .layout = .{
@@ -218,7 +227,7 @@ fn rhs() void {
             },
         },
     })({
-        fieldset(4, "Main Menu", mainPane);
+        try fieldset(4, "Main Menu", "[4] Main Menu", mainPane);
     });
 }
 
@@ -242,8 +251,8 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
         },
         .background_color = .{ 0, 0, 0, 255 },
     })({
-        lhs();
-        rhs();
+        try lhs();
+        try rhs();
         // End DayTimeClockPanel
 
     }); // End RootContainer
@@ -323,6 +332,10 @@ pub fn main() !void {
                 .h = @floatFromInt(rl.getMonitorHeight(display)),
             });
             rl.toggleFullscreen();
+        }
+
+        if (rl.isKeyDown(.s)) {
+            rl.takeScreenshot("screenshot.jpg");
         }
         // --- Update ---
         // const screen_width = rl.getScreenWidth();

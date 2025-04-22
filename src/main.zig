@@ -180,20 +180,12 @@ fn fieldset(id: u32, title: []const u8, fieldset_title: []const u8, content: fn 
             },
         })({
             _ = title;
-            // var buffer: [100]u8 = undefined;
-            // var fba = std.heap.FixedBufferAllocator.init(&buffer);
-            // const allocator = fba.allocator();
-            // const title_with_id = try std.fmt.allocPrint(allocator, "{s}{}", .{ title, id });
-            // defer allocator.free(title_with_id);
-
-            //const title_with_id = cl.ElementId.IDI(title, id);
-            //The actual Label Text
             cl.text(fieldset_title, .{
                 .font_id = FONT_ID_REGULAR,
                 .font_size = LABEL_FONT_SIZE,
                 .color = COLOR_TEXT_LABEL,
             });
-        }); // End FloatingLabelContainer
+        });
 
         content();
     });
@@ -208,6 +200,7 @@ fn lhs() !void {
                 .w = .fixed(800),
                 .h = .grow,
             },
+            .child_gap = 32,
         },
     })({
         try fieldset(1, "Previous", "[1] Previous", previousPane);

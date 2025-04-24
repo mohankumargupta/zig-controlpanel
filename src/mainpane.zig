@@ -10,18 +10,68 @@ pub fn mainPane() void {
         .id = .ID("MainPane"),
         .layout = .{
             .sizing = .grow, // Take remaining space *within the padded area*
-            .child_alignment = .center, // Center the text element inside
+            .child_alignment = .{ .x = .left, .y = .top }, // Center the text element inside
             // Add top padding to push time down below the floating label area
             // We need to account for the panel's top padding (15) and roughly the label height (16)
             .padding = .{ .top = LABEL_FONT_SIZE },
         },
     })({
-        // Time Text
-        cl.text("This is the main menu", .{
-            .font_id = FONT_ID_REGULAR,
-            .font_size = 72,
-            .color = COLOR_TEXT_TIME,
+        cl.UI()(
+            .{
+                .layout = .{
+                    .direction = .top_to_bottom,
+                    .sizing = .{ .w = .grow, .h = .grow },
+                    .child_alignment = .{ .x = .center, .y = .top },
+                    .child_gap = 32,
+                },
+            },
+        )({
+            cl.text("Quick Launch", .{
+                .font_id = FONT_ID_REGULAR,
+                .font_size = 72,
+                .color = COLOR_TEXT_TIME,
+            });
+
+            cl.UI()(
+                .{
+                    .layout = .{
+                        .direction = .left_to_right,
+                        .sizing = .{ .w = .grow, .h = .grow },
+                    },
+                },
+            )({
+                cl.UI()(
+                    .{
+                        .layout = .{
+                            .direction = .left_to_right,
+                            .sizing = .{ .w = .percent(0.8), .h = .grow },
+                        },
+                    },
+                )({
+                    cl.text("LHS", .{
+                        .font_id = FONT_ID_REGULAR,
+                        .font_size = 72,
+                        .color = COLOR_TEXT_TIME,
+                    });
+                });
+                cl.UI()(
+                    .{
+                        .layout = .{
+                            .direction = .left_to_right,
+                            .sizing = .{ .w = .grow, .h = .grow },
+                        },
+                    },
+                )({
+                    cl.text("RHS", .{
+                        .font_id = FONT_ID_REGULAR,
+                        .font_size = 72,
+                        .color = COLOR_TEXT_TIME,
+                    });
+                });
+            });
         });
+        // Time Text
+
     }); // End TimeTextContainer
 
 }

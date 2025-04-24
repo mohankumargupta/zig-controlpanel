@@ -1,0 +1,17 @@
+{
+	
+	"ClayUI": {
+		"scope": "",
+		"prefix": "clay",
+		"body": [
+			"cl.UI()(",
+			".{.layout = .{.direction = .top_to_bottom, .sizing = .{.w=.grow, .h=.grow},},},",
+			")(",
+			"{",
+			"$1",
+			"}",
+			" );",
+		],
+		"description": "Log output to console"
+	}
+}

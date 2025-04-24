@@ -8,6 +8,7 @@ const Recipe = @import("justfile.zig").Recipe;
 const Parameter = @import("justfile.zig").Parameter;
 const justfile = @import("justfile.zig");
 const Justfile = @import("justfile.zig").Justfile;
+const mainPane = @import("mainpane.zig").mainPane;
 const fs = std.fs;
 const fmt = std.fmt;
 
@@ -82,7 +83,7 @@ fn quickLaunchPane() void {
         },
     })({
         // Time Text
-        cl.text("08 : 48 : 23", .{
+        cl.text("", .{
             .font_id = FONT_ID_REGULAR,
             .font_size = 72,
             .color = COLOR_TEXT_TIME,
@@ -105,30 +106,7 @@ fn scriptsPane() void {
         },
     })({
         // Time Text
-        cl.text("08 : 48 : 23", .{
-            .font_id = FONT_ID_REGULAR,
-            .font_size = 72,
-            .color = COLOR_TEXT_TIME,
-        });
-    }); // End TimeTextContainer
-
-}
-
-fn mainPane() void {
-    // --- Time Container ---
-    // This remains inside the normal layout flow of the panel
-    cl.UI()(.{
-        .id = .ID("MainPane"),
-        .layout = .{
-            .sizing = .grow, // Take remaining space *within the padded area*
-            .child_alignment = .center, // Center the text element inside
-            // Add top padding to push time down below the floating label area
-            // We need to account for the panel's top padding (15) and roughly the label height (16)
-            .padding = .{ .top = LABEL_FONT_SIZE },
-        },
-    })({
-        // Time Text
-        cl.text("08 : 48 : 23", .{
+        cl.text("", .{
             .font_id = FONT_ID_REGULAR,
             .font_size = 72,
             .color = COLOR_TEXT_TIME,

@@ -37,37 +37,98 @@ pub fn mainPane() void {
                     .layout = .{
                         .direction = .left_to_right,
                         .sizing = .{ .w = .grow, .h = .grow },
+                        .padding = .{
+                            .left = 64,
+                            .right = 64,
+                            .top = 64,
+                            .bottom = 128,
+                        },
                     },
                 },
             )({
                 cl.UI()(
                     .{
                         .layout = .{
-                            .direction = .left_to_right,
-                            .sizing = .{ .w = .percent(0.8), .h = .grow },
-                        },
-                    },
-                )({
-                    cl.text("LHS", .{
-                        .font_id = FONT_ID_REGULAR,
-                        .font_size = 72,
-                        .color = COLOR_TEXT_TIME,
-                    });
-                });
-                cl.UI()(
-                    .{
-                        .layout = .{
-                            .direction = .left_to_right,
+                            .direction = .top_to_bottom,
                             .sizing = .{ .w = .grow, .h = .grow },
+                            .child_alignment = .center,
+                            .child_gap = 16,
+                        },
+                        .border = .{
+                            .color = .{ 0, 0, 240, 255 },
+                            .width = .all(2),
                         },
                     },
                 )({
-                    cl.text("RHS", .{
-                        .font_id = FONT_ID_REGULAR,
-                        .font_size = 72,
-                        .color = COLOR_TEXT_TIME,
+                    cl.UI()(
+                        .{
+                            .layout = .{
+                                .direction = .top_to_bottom,
+                                .sizing = .{ .w = .grow, .h = .grow },
+                                .padding = .all(64),
+                                .child_alignment = .center,
+                                .child_gap = 32,
+                            },
+                        },
+                    )({
+                        cl.UI()(
+                            .{
+                                .layout = .{
+                                    .direction = .top_to_bottom,
+                                    .sizing = .{ .w = .grow, .h = .grow },
+                                    .child_alignment = .{ .x = .left, .y = .top },
+                                    .child_gap = 24,
+                                },
+                            },
+                        )({
+                            cl.text("A) yt-dlp", .{
+                                .font_id = FONT_ID_REGULAR,
+                                .font_size = 72,
+                                .color = COLOR_TEXT_TIME,
+                            });
+                            cl.text("B) ffmpeg", .{
+                                .font_id = FONT_ID_REGULAR,
+                                .font_size = 72,
+                                .color = COLOR_TEXT_TIME,
+                            });
+                            cl.text("C) Something", .{
+                                .font_id = FONT_ID_REGULAR,
+                                .font_size = 72,
+                                .color = COLOR_TEXT_TIME,
+                            });
+                        });
                     });
                 });
+
+                // cl.UI()(
+                //     .{
+                //         .layout = .{
+                //             .direction = .left_to_right,
+                //             .sizing = .{ .w = .percent(0.8), .h = .grow },
+                //         },
+                //     },
+                // )({
+                //     cl.text("LHS", .{
+                //         .font_id = FONT_ID_REGULAR,
+                //         .font_size = 72,
+                //         .color = COLOR_TEXT_TIME,
+                //     });
+                // });
+                // cl.UI()(
+                //     .{
+                //         .layout = .{
+                //             .direction = .left_to_right,
+                //             .sizing = .{ .w = .grow, .h = .grow },
+                //         },
+                //     },
+                // )({
+                //     cl.text("RHS", .{
+                //         .font_id = FONT_ID_REGULAR,
+                //         .font_size = 72,
+                //         .color = COLOR_TEXT_TIME,
+                //     });
+                // });
+
             });
         });
         // Time Text

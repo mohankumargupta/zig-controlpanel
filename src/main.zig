@@ -115,7 +115,7 @@ fn scriptsPane() void {
 
 }
 
-fn fieldset(id: u32, title: []const u8, fieldset_title: []const u8, content: fn () void) !void {
+fn fieldset(id: u32, title: []const u8, fieldset_title: []const u8, content: fn () void) void {
     // --- Day Time Clock Panel ---
     cl.UI()(.{
         .id = .IDI("DayTimeClockPanel", id),
@@ -169,7 +169,7 @@ fn fieldset(id: u32, title: []const u8, fieldset_title: []const u8, content: fn 
     });
 }
 
-fn lhs() !void {
+fn lhs() void {
     cl.UI()(.{
         .id = .ID("lhs"),
         .layout = .{
@@ -181,13 +181,13 @@ fn lhs() !void {
             .child_gap = 32,
         },
     })({
-        try fieldset(1, "Previous", "[1] Previous", previousPane);
-        try fieldset(2, "Quick Launch", "[2] QuickLaunch", quickLaunchPane);
-        try fieldset(3, "Scripts", "[3] Scripts", scriptsPane);
+        fieldset(1, "Previous", "[1] Previous", previousPane);
+        fieldset(2, "Quick Launch", "[2] QuickLaunch", quickLaunchPane);
+        fieldset(3, "Scripts", "[3] Scripts", scriptsPane);
     });
 }
 
-fn rhs() !void {
+fn rhs() void {
     cl.UI()(.{
         .id = .ID("rhs"),
         .layout = .{
@@ -198,7 +198,7 @@ fn rhs() !void {
             },
         },
     })({
-        try fieldset(4, "Main Menu", "[4] Main Menu", mainPane);
+        fieldset(4, "Main Menu", "[4] Main Menu", mainPane);
     });
 }
 
@@ -222,8 +222,8 @@ fn createLayout() cl.ClayArray(cl.RenderCommand) {
         },
         .background_color = .{ 0, 0, 0, 255 },
     })({
-        try lhs();
-        try rhs();
+        lhs();
+        rhs();
         // End DayTimeClockPanel
 
     }); // End RootContainer

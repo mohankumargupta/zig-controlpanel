@@ -1,9 +1,9 @@
 const cl = @import("zclay");
 
-const ClayUI = struct {
+pub const ClayUI = struct {
     config: cl.ElementDeclaration,
 
-    pub fn layout(config: cl.ElementDeclaration) ClayUI {
+    pub fn element(config: cl.ElementDeclaration) ClayUI {
         return ClayUI{ .config = config };
     }
 

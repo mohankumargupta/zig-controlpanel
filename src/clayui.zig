@@ -13,6 +13,10 @@ pub const ClayUI = struct {
             innerContentFn();
         });
     }
+
+    // pub fn leaf(self: ClayUI) fn (void) void {
+    //     return cl.UI()(self.config);
+    // }
 };
 
 // --- Example Usage (within a function like createLayout) ---

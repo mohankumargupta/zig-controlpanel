@@ -175,7 +175,7 @@ fn lhs() !void {
         .layout = .{
             .direction = .top_to_bottom,
             .sizing = .{
-                .w = .fixed(800),
+                .w = .percent(0.33),
                 .h = .grow,
             },
             .child_gap = 32,
@@ -193,7 +193,7 @@ fn rhs() !void {
         .layout = .{
             .direction = .top_to_bottom,
             .sizing = .{
-                .w = .grow,
+                .w = .percent(0.67),
                 .h = .grow,
             },
         },
@@ -274,7 +274,7 @@ pub fn main() !void {
     const memory = try allocator.alloc(u8, min_memory_size);
     defer allocator.free(memory);
     const arena = cl.createArenaWithCapacityAndMemory(memory);
-    _ = cl.initialize(arena, .{ .h = 1024, .w = 800 }, .{});
+    _ = cl.initialize(arena, .{ .h = 800, .w = 600 }, .{});
     cl.setMeasureTextFunction(void, {}, renderer.measureText);
 
     // --- Initialize Raylib ---

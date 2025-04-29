@@ -32,6 +32,24 @@ const LABEL_VERTICAL_OFFSET: f32 = @as(f32, @floatFromInt(LABEL_FONT_SIZE)) / 2.
 const SCREEN_WIDTH = 1024;
 const SCREEN_HEIGHT = 768;
 
+const AppActiveWindow = enum {
+    MAIN_MENU,
+    QUICK_LINKS,
+    SCRIPTS,
+};
+
+const AppMainMenuState = struct {
+    index: u8,
+
+    pub const default = AppMainMenuState{0};
+};
+
+const AppState = struct {
+    main_menu: AppMainMenuState,
+
+    pub const default = AppState{AppMainMenuState.default};
+};
+
 fn loadFont(file_data: ?[]const u8, font_id: u16, font_size: i32) !void {
     renderer.raylib_fonts[font_id] = try rl.loadFontFromMemory(
         ".ttf",
@@ -163,7 +181,7 @@ fn lhs() void {
             .child_gap = 32,
         },
     })({
-        fieldset(1, "Previous", "[1] Previous", previousPane);
+        fieldset(1, "Selection", "[1] Selection", previousPane);
         fieldset(2, "Quick Launch", "[2] QuickLaunch", quickLaunchPane);
         fieldset(3, "Scripts", "[3] Scripts", scriptsPane);
     });

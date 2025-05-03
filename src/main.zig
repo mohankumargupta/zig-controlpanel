@@ -102,8 +102,8 @@ pub fn main() !void {
     });
     rl.initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Quick Launcher");
     rl.setWindowMinSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    //rl.setTargetFPS(15);
-    rl.enableEventWaiting();
+    rl.setTargetFPS(15);
+    //rl.enableEventWaiting();
 
     // --- Load Assets ---
     // Using default font for simplicity

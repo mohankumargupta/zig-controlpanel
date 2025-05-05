@@ -84,6 +84,11 @@ pub fn main() !void {
     const parsed = try getTasks(allocator);
     defer parsed.deinit();
 
+    const exeDir = try fs.selfExeDirPathAlloc(allocator);
+    defer allocator.free(exeDir);
+
+    std.log.err("exe dir: {s}", .{exeDir});
+
     //const allocator = std.heap.page_allocator;
 
     // --- Initialize Clay ---

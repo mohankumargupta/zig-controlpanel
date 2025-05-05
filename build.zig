@@ -117,6 +117,7 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_exe_unit_tests.step);
 
     //b.installFile("src/justfile2.json", "./bin/justfile2.json");
+    b.installBinFile(b.pathJoin(&.{ "src", "justfile" }), "justfile");
 }
 
 fn addDependencies(

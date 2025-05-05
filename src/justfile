@@ -1,0 +1,23 @@
+set shell := ["sh", "-c"]
+set windows-shell := ["powershell", "-c"]
+
+# Precede with @ symbol(no spaces) is how you quiet or make silent recipes or recipe steps
+
+# shebang := if os() == 'windows' {
+# 	'powershell'
+# } else {
+# 	'/usr/bin/env bash'
+# }
+
+
+open:
+    just _open-{{os()}}
+
+open-windows:
+    start .
+
+_open-linux:
+    xdg-open .
+
+_open-macos:
+    open .

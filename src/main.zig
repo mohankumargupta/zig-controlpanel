@@ -155,29 +155,13 @@ pub fn main() !void {
                     const recipes = root.object.get("recipes");
                     if (recipes) |r| {
                         const recipe_values = r.object.values();
-
                         for (recipe_values) |recipe| {
-                            //recipe.dump();
                             const name = recipe.object.get("name");
                             if (name) |recipe_name| {
                                 std.log.err("recipe name: {s}", .{recipe_name.string});
                             }
                         }
                     }
-                    // const parsed = try justfile.parseJustfile(allocator, child.stdout);
-                    // justfile.deinit(parsed);
-                    // var root = parsed.value;
-                    // const recipes = root.recipes.map.values();
-                    // std.log.err("recipe count: {}", .{recipes.len});
-
-                    // for (recipes) |recipe| {
-                    //     std.log.err("recipe {s}", .{recipe.name});
-                    // }
-                    // const first_recipe = keys[0];
-
-                    // std.log.err("first recipe: {s}", .{first_recipe});
-                    //_ = parsed.value.Object.get("build");
-
                 }
             },
             .Signal => return error.Signal,
@@ -187,9 +171,6 @@ pub fn main() !void {
     } else {
         std.log.err("Just not installed.", .{});
     }
-
-    //const parsed = try findInstalledProgram(allocator, exeDir, );
-    //defer parsed.deinit();
 
     //const allocator = std.heap.page_allocator;
 

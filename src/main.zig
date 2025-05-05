@@ -13,6 +13,9 @@ const ClayUI = @import("clayui.zig").ClayUI;
 
 const fs = std.fs;
 const fmt = std.fmt;
+const os = std.os;
+const builtin = @import("builtin");
+const process = std.process;
 
 const COLOR_PANEL_BACKGROUND: cl.Color = .{ 61, 26, 5, 255 };
 const COLOR_BORDER: cl.Color = .{ 240, 240, 240, 255 };
@@ -63,17 +66,40 @@ fn loadFont(file_data: ?[]const u8, font_id: u16, font_size: i32) !void {
     );
 }
 
-fn getTasks(allocator: std.mem.Allocator) !std.json.Parsed(Justfile) {
-    const justfile_json = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
-    defer allocator.free(justfile_json);
-    const parsed = try parseJustfile(allocator, justfile_json);
-    const recipes = parsed.value.recipes.map.values();
+//fn getTasks(allocator: std.mem.Allocator, exeDir: []const u8) !std.json.Parsed(Justfile) {
+// const justfile_path = try fs.path.join(allocator, &.{ exeDir, "justfile" });
+// defer allocator.free(justfile_path);
+// const justfile_json = try fs.cwd().readFileAlloc(allocator, "./src/justfile2.json", 20000);
+// defer allocator.free(justfile_json);
+// const parsed = try parseJustfile(allocator, justfile_json);
+// const recipes = parsed.value.recipes.map.values();
 
-    for (recipes) |recipe| {
-        const name = recipe.name;
-        std.debug.print("recipe name:{s}\n", .{name});
+// for (recipes) |recipe| {
+//     const name = recipe.name;
+//     std.debug.print("recipe name:{s}\n", .{name});
+// }
+// return parsed;
+//}
+
+fn doesProgramExist(allocator: std.mem.Allocator, program: []const u8) !bool {
+    const checker: []const u8 = switch (builtin.target.os.tag) {
+        .windows => "where",
+        else => "which",
+    };
+    var child_proc = process.Child.init(&.{ checker, program }, allocator);
+    child_proc.stdout_behavior = .Ignore;
+    child_proc.stderr_behavior = .Ignore;
+    const result = try child_proc.spawnAndWait();
+    switch (result) {
+        .Exited => |code| {
+            if (code == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        else => unreachable,
     }
-    return parsed;
 }
 
 pub fn main() !void {
@@ -81,13 +107,21 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
-    const parsed = try getTasks(allocator);
-    defer parsed.deinit();
-
     const exeDir = try fs.selfExeDirPathAlloc(allocator);
     defer allocator.free(exeDir);
 
     std.log.err("exe dir: {s}", .{exeDir});
+
+    const is_just_installed = try doesProgramExist(allocator, "just");
+
+    if (is_just_installed) {
+        std.log.err("Just installed.", .{});
+    } else {
+        std.log.err("Just not installed.", .{});
+    }
+
+    //const parsed = try findInstalledProgram(allocator, exeDir, );
+    //defer parsed.deinit();
 
     //const allocator = std.heap.page_allocator;
 

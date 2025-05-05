@@ -16,6 +16,8 @@ const fmt = std.fmt;
 const os = std.os;
 const builtin = @import("builtin");
 const process = std.process;
+const RunResult = std.process.Child.RunResult;
+const mem = std.mem;
 
 const COLOR_PANEL_BACKGROUND: cl.Color = .{ 61, 26, 5, 255 };
 const COLOR_BORDER: cl.Color = .{ 240, 240, 240, 255 };
@@ -102,6 +104,26 @@ fn doesProgramExist(allocator: std.mem.Allocator, program: []const u8) !bool {
     }
 }
 
+fn runProcess(allocator: mem.Allocator, argv: []const []const u8) !RunResult {
+    var child = process.Child.init(argv, allocator);
+    child.stdout_behavior = .Pipe;
+    child.stderr_behavior = .Pipe;
+    var stdout: std.ArrayListUnmanaged(u8) = .empty;
+    defer stdout.deinit(allocator);
+    var stderr: std.ArrayListUnmanaged(u8) = .empty;
+    defer stderr.deinit(allocator);
+    try child.spawn();
+    errdefer {
+        _ = child.kill() catch {};
+    }
+    try child.collectOutput(allocator, &stdout, &stderr, 50 * 1024);
+    return RunResult{
+        .stdout = try stdout.toOwnedSlice(allocator),
+        .stderr = try stdout.toOwnedSlice(allocator),
+        .term = try child.wait(),
+    };
+}
+
 pub fn main() !void {
     var gpa: std.heap.DebugAllocator(.{}) = .init;
     defer _ = gpa.deinit();
@@ -116,6 +138,23 @@ pub fn main() !void {
 
     if (is_just_installed) {
         std.log.err("Just installed.", .{});
+        const justfile_path = try fs.path.join(allocator, &.{ exeDir, "justfile" });
+        defer allocator.free(justfile_path);
+        std.log.err("Justfile location:  {s}", .{justfile_path});
+        const child = try runProcess(allocator, &.{ "just", "--dump", "--dump-format", "json", "-f", justfile_path });
+        defer allocator.free(child.stdout);
+        defer allocator.free(child.stderr);
+        switch (child.term) {
+            .Exited => |code| {
+
+                //if (code == 0) {
+                std.log.err("code: {} msg: {s}", .{ code, child.stdout });
+                //}
+            },
+            .Signal => return error.Signal,
+            .Stopped => return error.Stopped,
+            .Unknown => return error.Unknown,
+        }
     } else {
         std.log.err("Just not installed.", .{});
     }

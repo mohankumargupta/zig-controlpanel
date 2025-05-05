@@ -148,7 +148,7 @@ pub fn main() !void {
         switch (child.term) {
             .Exited => |code| {
                 if (code == 0) {
-                    std.log.err("msg: {s}", .{child.stdout});
+                    //std.log.err("msg: {s}", .{child.stdout});
                     var parsed = try json.parseFromSlice(json.Value, allocator, child.stdout, .{});
                     defer parsed.deinit();
                     var root = parsed.value;
@@ -158,7 +158,9 @@ pub fn main() !void {
                         for (recipe_values) |recipe| {
                             const name = recipe.object.get("name");
                             if (name) |recipe_name| {
-                                std.log.err("recipe name: {s}", .{recipe_name.string});
+                                if (!std.mem.startsWith(u8, recipe_name.string, "_")) {
+                                    std.log.err("recipe name: {s}", .{recipe_name.string});
+                                }
                             }
                         }
                     }

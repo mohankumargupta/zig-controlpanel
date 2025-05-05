@@ -13,7 +13,7 @@ set windows-shell := ["powershell", "-c"]
 open:
     just _open-{{os()}}
 
-open-windows:
+_open-windows:
     start .
 
 _open-linux:

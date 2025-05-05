@@ -18,6 +18,7 @@ const builtin = @import("builtin");
 const process = std.process;
 const RunResult = std.process.Child.RunResult;
 const mem = std.mem;
+const json = std.json;
 
 const COLOR_PANEL_BACKGROUND: cl.Color = .{ 61, 26, 5, 255 };
 const COLOR_BORDER: cl.Color = .{ 240, 240, 240, 255 };
@@ -146,10 +147,38 @@ pub fn main() !void {
         defer allocator.free(child.stderr);
         switch (child.term) {
             .Exited => |code| {
+                if (code == 0) {
+                    std.log.err("msg: {s}", .{child.stdout});
+                    var parsed = try json.parseFromSlice(json.Value, allocator, child.stdout, .{});
+                    defer parsed.deinit();
+                    var root = parsed.value;
+                    const recipes = root.object.get("recipes");
+                    if (recipes) |r| {
+                        const recipe_values = r.object.values();
 
-                //if (code == 0) {
-                std.log.err("code: {} msg: {s}", .{ code, child.stdout });
-                //}
+                        for (recipe_values) |recipe| {
+                            //recipe.dump();
+                            const name = recipe.object.get("name");
+                            if (name) |recipe_name| {
+                                std.log.err("recipe name: {s}", .{recipe_name.string});
+                            }
+                        }
+                    }
+                    // const parsed = try justfile.parseJustfile(allocator, child.stdout);
+                    // justfile.deinit(parsed);
+                    // var root = parsed.value;
+                    // const recipes = root.recipes.map.values();
+                    // std.log.err("recipe count: {}", .{recipes.len});
+
+                    // for (recipes) |recipe| {
+                    //     std.log.err("recipe {s}", .{recipe.name});
+                    // }
+                    // const first_recipe = keys[0];
+
+                    // std.log.err("first recipe: {s}", .{first_recipe});
+                    //_ = parsed.value.Object.get("build");
+
+                }
             },
             .Signal => return error.Signal,
             .Stopped => return error.Stopped,
